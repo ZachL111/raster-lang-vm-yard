@@ -1,0 +1,7 @@
+name,demand,capacity,latency,risk,weight,score,decision,reason
+baseline,58,83,15,11,9,109,review,compilers baseline scenario exercises the review path for bounded failure handling
+pressure,86,75,29,18,10,63,review,compilers pressure scenario exercises the review path for bounded failure handling
+surge,106,100,18,16,14,200,accept,compilers surge scenario keeps the local fixture within the modeled acceptance band
+degraded,72,57,33,26,6,-63,review,compilers degraded scenario exercises the review path for bounded failure handling
+recovery,86,105,16,13,10,175,review,compilers recovery scenario exercises the review path for bounded failure handling
+boundary,70,86,21,18,8,66,review,compilers boundary scenario exercises the review path for bounded failure handling
