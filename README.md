@@ -1,68 +1,40 @@
 # raster-lang-vm-yard
 
-`raster-lang-vm-yard` explores compilers in Julia. The repository keeps the core rule set compact, then surrounds it with examples that show how the decisions move.
+`raster-lang-vm-yard` is a Julia project in compilers. Its focus is to create a Julia reference implementation for vm workflows, centered on incremental indexing, append-only fixtures, and checkpoint recovery checks.
 
-## Raster Lang VM Yard Notes
+## Purpose
 
-The quickest review path is the verifier first, then the fixtures, then the operations note. That order makes it easy to see whether the code, data, and explanation still agree.
+This is intentionally local and self-contained so it can be inspected without credentials, services, or seeded history.
 
-## Why This Exists
+## Raster Lang VM Yard Review Notes
 
-This project keeps the domain idea close to the tests. That makes it useful as a reference implementation, a small experiment, or a starting point for a more specialized tool.
+Start with `diagnostic reach` and `lowering drift`. Those cases create the widest score spread in this repo, so they are the best quick check when the model changes.
 
-## Feature Notes
+## What Is Covered
 
-- Models source form with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep intermediate state changes visible in code review.
-- Includes extended examples for bytecode output, including `surge` and `degraded`.
-- Documents evaluation checks tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
+- `fixtures/domain_review.csv` adds cases for IR pressure and lowering drift.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/raster-lang-vm-walkthrough.md` walks through the case spread.
+- The Julia code includes a review path for `diagnostic reach` and `lowering drift`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
 ## Implementation Notes
 
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying compilers behavior without needing a service or database unless the language project itself is SQL. The Julia project keeps the model in a small module with assertions in a local test script.
+The core code exposes a scoring path and the added review layer uses `signal`, `slack`, `drag`, and `confidence`. The domain terms are `IR pressure`, `lowering drift`, `stack depth`, and `diagnostic reach`.
 
-## Code Tour
+The Julia implementation avoids hidden state so fixture changes are easy to reason about.
 
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-
-## Local Setup
-
-The only required setup is the local Julia toolchain. After cloning, stay in the repo root so fixture paths resolve correctly.
-
-## Try It
+## Command
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Audit Path
 
-## Tests
+The verifier is intentionally local. It should fail if the fixture score math, lane assignment, or language-specific test drifts.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Limits
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Example Scenarios
-
-The examples are meant to be readable before they are exhaustive. They cover enough variation to show how latency and risk can pull a decision below the threshold.
-
-## Boundaries
-
-The examples cover useful edges, not every edge. A larger version would add malformed-input tests, richer reports, and deeper domain parsers.
-
-## Roadmap
-
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add one more compilers fixture that focuses on a malformed or borderline input.
+The fixture set is small enough to audit by hand. The next useful expansion is malformed input coverage, not extra surface area.
